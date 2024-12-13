@@ -1,16 +1,15 @@
 package models
 
 type Segment struct {
-	ID int 
-	Slug string
-	AutoAddPercent int 
+	Slug string `json:"slug"`
+	AutoAddPercent int  `json:"auto_add_percent"`
 }
 
 
 
 type UserSegment struct {
-	UserId int
-	SegmentId int
-	AutoAdded bool 
-	ExpiresAt string
+	UserId int `json:"user_id"`
+	SegmentId int `json:"segment_id"`
+	AutoAdded bool  `json:"auto_added"`
+	ExpiresAt string  `json:"expires_at"`
 }

@@ -11,4 +11,4 @@ services:
     ports:
       - '${DB_PORT}:5432'
     volumes:
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/000001_init.up
+      - ./migration/000001_init.up.sql:/docker-entrypoint-initdb.d/init.sql
