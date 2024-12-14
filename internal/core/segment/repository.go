@@ -26,3 +26,15 @@ func (r *segmentRepository) CreateSegment (ctx context.Context,slug string,AutoA
 
 	return id,nil
 }
+
+
+
+
+
+// func (r *segmentRepository) DeleteSegment(ctx context.Context,slug string) error {
+// 	_,err := r.db.ExecContext(ctx,"DELETE FROM segments WHERE slug = $1",slug)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }

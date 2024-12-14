@@ -9,6 +9,8 @@ func SetupRouter(handler *Handler) *mux.Router {
 	router.HandleFunc("/segment/", handler.CreateSegment).Methods("POST")
 	//router.HandleFunc("/api/segment/{slug}", handler.DeleteSegment).Methods("DELETE")
 
+	router.HandleFunc("/user/", handler.CreateUser).Methods("POST")
+
 
 	return router
 }

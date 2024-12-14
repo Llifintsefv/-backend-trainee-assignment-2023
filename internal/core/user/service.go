@@ -2,6 +2,8 @@ package user
 
 import (
 	"backend-trainee-assignment-2023/internal/core/interfaces"
+	"backend-trainee-assignment-2023/internal/core/models"
+	"context"
 )
 
 
@@ -15,3 +17,6 @@ func NewUserService(userRepo  interfaces.UserRepository, segmentRepo  interfaces
 	return &userService{userRepo: userRepo, segmentRepo: segmentRepo}
 }
 
+func (s *userService) CreateUser(ctx context.Context,user models.User) error {
+	return s.userRepo.CreateUser(ctx,user.Id)
+}

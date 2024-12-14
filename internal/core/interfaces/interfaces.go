@@ -14,7 +14,9 @@ type SegmentService interface {
 }
 
 type UserRepository interface {
+	CreateUser(ctx context.Context, id int) error
 }
 
 type UserService interface {
+	CreateUser(ctx context.Context, user models.User) error
 }
