@@ -4,6 +4,8 @@ import (
 	"backend-trainee-assignment-2023/internal/core/interfaces"
 	"context"
 	"database/sql"
+
+	"golang.org/x/net/context/ctxhttp"
 )
 
 
@@ -27,14 +29,23 @@ func (r *segmentRepository) CreateSegment (ctx context.Context,slug string,AutoA
 	return id,nil
 }
 
+func (r *segmentRepository) DeleteSegment(ctx context.Context,slug string) error {
+	_,err := r.db.ExecContext(ctx,"DELETE FROM segments WHERE slug = $1",slug)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+
+func (r *segmentRepository) CreateUserSegment(ctx context.Context,userId int,segmentId int) error {
+	_,err := r.db.ExecContext(ctx,"INSERT INTO user_segments (user_id,segment_id) VALUES ($1,$2)",userId,segmentId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 
 
 
-// func (r *segmentRepository) DeleteSegment(ctx context.Context,slug string) error {
-// 	_,err := r.db.ExecContext(ctx,"DELETE FROM segments WHERE slug = $1",slug)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }

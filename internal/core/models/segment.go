@@ -5,6 +5,12 @@ type Segment struct {
 	AutoAddPercent int  `json:"auto_add_percent"`
 }
 
+type SegmentResponse struct {
+    Status string      `json:"status"`
+	Id     int         `json:"id"`
+    Data   Segment 		`json:"segment"`
+}
+
 
 
 type UserSegment struct {
@@ -13,3 +19,4 @@ type UserSegment struct {
 	AutoAdded bool  `json:"auto_added"`
 	ExpiresAt string  `json:"expires_at"`
 }
+
