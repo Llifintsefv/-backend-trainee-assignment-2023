@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type Handler struct {
@@ -81,3 +84,32 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request){
 		return
 	}
 }
+
+
+func (h *Handler) CreateSegmentUser(w http.ResponseWriter, r *http.Request){
+	var req models.SegmentUserRequest
+	vars := mux.Vars(r)
+	userId,err := strconv.ParseInt(vars["user_id"],10,64)
+	if err != nil {
+		http.Error(w, "Failed to parse user_id", http.StatusBadRequest)
+		return
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Failed to decode request", http.StatusBadRequest)
+		return
+	}
+
+	ctx := r.Context()
+
+	err = h.segmentService.CreateUserSegment(ctx,int(userId),req.Add,req.Remove,req.TTL)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to create user segment", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
+// func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+// 	vars := r.Body
+// }

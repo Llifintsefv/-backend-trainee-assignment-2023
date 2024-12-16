@@ -24,3 +24,13 @@ func(r *userRepository) CreateUser(ctx context.Context,id int) error {
 	}
 	return nil
 }
+
+
+func(r *userRepository) UserExists(id int) (bool,error) {
+	var exists bool
+	err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`).Scan(&exists)
+	if err != nil {
+		return false,err
+	}
+	return true,nil
+}
