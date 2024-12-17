@@ -26,7 +26,7 @@ func (s *segmentService) CreateSegment(ctx context.Context,segment models.Segmen
 func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []string, Remove []string, TTL map[string]string) (error) {
 	_,err := s.userRepo.UserExists(userId)
 	if err != nil {
-		
+		return fmt.Errorf("user %d not found",userId)
 	}
 
 	for _,slug := range Add {
@@ -53,32 +53,13 @@ func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []
 		if err != nil {
 			return fmt.Errorf("segment %s not found",slug)
 		}
+		err = s.segmentRepo.DeleteUserSegment(ctx,userId,segmentId)
+		if err != nil { 
+			return fmt.Errorf("failed to delete segment %s",slug)
 		}
+		}
+		return nil
 	}
 	
 	
-	// segmentId,err := s.segmentRepo.GetSegmentIdBySlug(ctx,userSegment.Slug)
-	// if err != nil {
-	// 	if err == sql.ErrNoRows {
-	// 		return err
-	// 	} else {
-	// 		return err
-	// 	}
-	// }
-
 	
-	// ExpiresAt,err := time.Parse(time.RFC3339,userSegment.ExpiresAt)
-	// if err != nil {
-
-	// }
-
-	// err = s.segmentRepo.CreateUserSegment(ctx,userSegment.UserId,segmentId,ExpiresAt)
-	// if err != nil {
-
-	// }
-
-	// return nil
-
-
-
-}

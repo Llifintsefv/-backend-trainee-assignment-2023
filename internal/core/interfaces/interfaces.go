@@ -10,6 +10,7 @@ type SegmentRepository interface {
 	CreateSegment(ctx context.Context, slug string, AutoAddPercent int) (int, error)
 	SegmentExists(id int) (bool,error)
 	GetSegmentIdBySlug(ctx context.Context, slug string) (int, error)
+	DeleteUserSegment(ctx context.Context, userId int, segmentId int) error
 	CreateUserSegment(ctx context.Context, userId int, segmentId int, ExpiresAt time.Time) error
 }
 

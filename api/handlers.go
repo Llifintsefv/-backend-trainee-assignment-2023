@@ -87,7 +87,7 @@ func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request){
 
 
 func (h *Handler) CreateSegmentUser(w http.ResponseWriter, r *http.Request){
-	var req models.SegmentUserRequest
+	var req models.UserSegmentRequest
 	vars := mux.Vars(r)
 	userId,err := strconv.ParseInt(vars["user_id"],10,64)
 	if err != nil {
@@ -107,9 +107,6 @@ func (h *Handler) CreateSegmentUser(w http.ResponseWriter, r *http.Request){
 		http.Error(w, "Failed to create user segment", http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 }
 
-// func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
-// 	vars := r.Body
-// }

@@ -58,7 +58,7 @@ func (r *segmentRepository) GetSegmentIdBySlug(ctx context.Context,slug string) 
 func (r *segmentRepository) DeleteUserSegment(ctx context.Context, userId int, segmentId int) error {
 	_, err := r.db.ExecContext(ctx, "UPDATE user_segments SET deleted_at = $1 WHERE user_id = $2 AND segment_id = $3 AND deleted_at IS NULL", time.Now(), userId, segmentId)
 	return err
-}п
+}
 
 func (r *segmentRepository) CreateUserSegment(ctx context.Context,userId int,segmentId int,ExpiresAt time.Time) error {
 	tx,err := r.db.BeginTx(ctx,nil)
