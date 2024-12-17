@@ -30,7 +30,7 @@ func main() {
 
 	router := api.SetupRouter(handler)
 
-	fmt.Println("adsasdasdasd")
+	fmt.Println("server started at :8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal(err)
 	}
