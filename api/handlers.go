@@ -54,6 +54,20 @@ func (h *Handler) CreateSegment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) DeleteSegment(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+	ctx := r.Context()
+
+	err := h.segmentService.DeleteSegment(ctx,slug)
+	if err != nil {
+		http.Error(w, "Failed to delete segment", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 
 func (h *Handler) CreateUser(w http.ResponseWriter, r *http.Request){
 	var user models.User

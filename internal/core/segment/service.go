@@ -23,6 +23,24 @@ func (s *segmentService) CreateSegment(ctx context.Context,segment models.Segmen
 	return s.segmentRepo.CreateSegment(ctx,segment.Slug,segment.AutoAddPercent)
 }
 
+func (s *segmentService) DeleteSegment(ctx context.Context, slug string) (error) {
+	segmentId,err := s.segmentRepo.GetSegmentIdBySlug(ctx,slug)
+	if err != nil {
+		return fmt.Errorf("segment %s not found",slug)
+	}
+	_,err = s.segmentRepo.SegmentExists(segmentId)
+	
+	if err != nil {
+		return fmt.Errorf("segment %s not found",slug)
+	}
+
+	err = s.segmentRepo.DeleteSegment(ctx,slug)
+	if err != nil {
+		return fmt.Errorf("failed to delete segment %s",slug)	
+	}
+	return nil
+}
+
 func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []string, Remove []string, TTL map[string]string) (error) {
 	_,err := s.userRepo.UserExists(userId)
 	if err != nil {
