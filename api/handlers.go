@@ -124,3 +124,50 @@ func (h *Handler) CreateSegmentUser(w http.ResponseWriter, r *http.Request){
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h *Handler) GetUserSegments(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userId,err := strconv.ParseInt(vars["user_id"],10,64)
+	if err != nil {
+		http.Error(w, "Failed to parse user_id", http.StatusBadRequest)
+		return
+	}
+	ctx := r.Context()
+
+	segments, err := h.segmentService.GetUserSegments(ctx,int(userId))
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to get user segments", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(segments); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *Handler) DeleteUserSegment(w http.ResponseWriter, r *http.Request){
+	vars := mux.Vars(r)
+	userId,err := strconv.ParseInt(vars["user_id"],10,64)
+	if err != nil {
+		http.Error(w, "Failed to parse user_id", http.StatusBadRequest)
+		return
+	}
+	segmentId,err := strconv.ParseInt(vars["segment_id"],10,64)
+	if err != nil {
+		http.Error(w, "Failed to parse segment_id", http.StatusBadRequest)
+		return
+	}
+	ctx := r.Context()
+
+	err = h.segmentService.DeleteUserSegment(ctx,int(userId),int(segmentId))
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Failed to delete user segment", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)	
+}
+

@@ -41,6 +41,10 @@ func (s *segmentService) DeleteSegment(ctx context.Context, slug string) (error)
 	return nil
 }
 
+func (s *segmentService) DeleteUserSegment(ctx context.Context,userId int,segmentId int) (error) {
+	return s.segmentRepo.DeleteUserSegment(ctx,userId,segmentId)
+}
+
 func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []string, Remove []string, TTL map[string]string) (error) {
 	_,err := s.userRepo.UserExists(userId)
 	if err != nil {
@@ -80,4 +84,17 @@ func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []
 	}
 	
 	
+func (s *segmentService) GetUserSegments(ctx context.Context,userId int) ([]models.GetUserSegmentsResponse, error) {
+	_,err := s.userRepo.UserExists(userId)
+	if err != nil {
+		return nil,fmt.Errorf("user %d not found",userId)
+	}
 	
+	UserSegments,err := s.segmentRepo.GetUserSegments(ctx,userId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user segments: %w", err)
+	}
+
+	return UserSegments,nil
+
+}

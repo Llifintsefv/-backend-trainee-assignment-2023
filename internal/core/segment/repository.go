@@ -2,6 +2,7 @@ package segment
 
 import (
 	"backend-trainee-assignment-2023/internal/core/interfaces"
+	"backend-trainee-assignment-2023/internal/core/models"
 	"context"
 	"database/sql"
 	"fmt"
@@ -105,6 +106,39 @@ func (r *segmentRepository) CreateUserSegment(ctx context.Context,userId int,seg
 	}
 	log.Println(userId,segmentId,ExpiresAt)
 	return tx.Commit()
+}
+
+func (r *segmentRepository) GetUserSegments(ctx context.Context,userId int) ([]models.GetUserSegmentsResponse,error) {
+	rows,err := r.db.QueryContext(ctx, `
+		SELECT us.segment_id, us.created_at, us.deleted_at, s.slug
+        FROM user_segments us
+        JOIN segments s ON us.segment_id = s.id
+        WHERE us.user_id = $1 AND us.deleted_at IS NULL`,userId)
+	if err != nil {
+		return nil,err
+	}
+
+	defer rows.Close()
+
+	var segments []models.GetUserSegmentsResponse
+	for rows.Next(){
+		var us models.GetUserSegmentsResponse
+		var deletedAt sql.NullTime
+		if err := rows.Scan(&us.SegmentId,&us.CreatedAt,&deletedAt,&us.Slug); err != nil {
+			return nil,err
+		}
+		if deletedAt.Valid {
+			us.DeletedAt = &deletedAt.Time
+		} else {
+			us.DeletedAt = nil
+		}
+		segments = append(segments, us)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return segments, nil
 }
 
 
