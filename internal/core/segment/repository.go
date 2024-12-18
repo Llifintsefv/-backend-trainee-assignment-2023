@@ -4,6 +4,7 @@ import (
 	"backend-trainee-assignment-2023/internal/core/interfaces"
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 )
@@ -30,11 +31,25 @@ func (r *segmentRepository) CreateSegment (ctx context.Context,slug string,AutoA
 }
 
 func (r *segmentRepository) DeleteSegment(ctx context.Context,slug string) error {
-	_,err := r.db.ExecContext(ctx,"DELETE FROM segments WHERE slug = $1",slug)
+	tx,err := r.db.BeginTx(ctx,nil)
 	if err != nil {
 		return err
 	}
-	return nil
+	defer tx.Rollback()
+	 _, err = tx.ExecContext(ctx, "UPDATE user_segments SET deleted_at = CURRENT_TIMESTAMP WHERE slug = $1 AND deleted_at IS NULL", slug)
+    if err != nil {
+        return fmt.Errorf("failed to update user_segments: %w", err)
+    }
+
+	_,err = tx.ExecContext(ctx,"DELETE FROM segments WHERE slug = $1",slug)
+	if err != nil {
+		return err
+	}
+	if err = tx.Commit(); err != nil {
+        return fmt.Errorf("failed to commit transaction: %w", err)
+    }
+
+    return nil
 }
 
 func(r *segmentRepository) SegmentExists(id int) (bool,error) {

@@ -20,18 +20,3 @@ CREATE TABLE user_segments (
 );
 
 
-CREATE OR REPLACE FUNCTION soft_delete_user_segments()
-RETURNS TRIGGER AS $$
-BEGIN
-  UPDATE user_segments
-  SET deleted_at = CURRENT_TIMESTAMP
-  WHERE segment_id = OLD.id;
-  RETURN OLD; 
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE TRIGGER before_segment_delete
-BEFORE DELETE ON segments
-FOR EACH ROW
-EXECUTE PROCEDURE soft_delete_user_segments();
