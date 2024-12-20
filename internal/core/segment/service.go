@@ -85,9 +85,12 @@ func (s *segmentService) CreateUserSegment(ctx context.Context,userId int,Add []
 	
 	
 func (s *segmentService) GetUserSegments(ctx context.Context,userId int) ([]models.GetUserSegmentsResponse, error) {
-	_,err := s.userRepo.UserExists(userId)
+	exists, err := s.userRepo.UserExists(userId)
 	if err != nil {
-		return nil,fmt.Errorf("user %d not found",userId)
+		return nil, fmt.Errorf("failed to check user existence: %w", err)
+	}
+	if !exists {
+		return nil, fmt.Errorf("user %d not found", userId)
 	}
 	
 	UserSegments,err := s.segmentRepo.GetUserSegments(ctx,userId)

@@ -133,6 +133,7 @@ func (h *Handler) GetUserSegments(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx := r.Context()
 
+	
 	segments, err := h.segmentService.GetUserSegments(ctx,int(userId))
 	if err != nil {
 		log.Println(err)
