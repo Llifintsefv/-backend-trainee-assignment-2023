@@ -95,3 +95,33 @@ func TestUserExists(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
+
+func TestUserExists_NotFound(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+
+	repo := NewUserRepo(db)
+
+	userId := 999
+
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`)).
+		WithArgs(userId).
+		WillReturnRows(sqlmock.NewRows([]string{"exists"}).AddRow(false))
+
+	exists, err := repo.UserExists(userId)
+
+	if err != nil {
+		t.Errorf("UserExists returned an error: %v", err)
+	}
+
+	if exists {
+		t.Errorf("UserExists returned true, expected false")
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
