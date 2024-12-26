@@ -28,7 +28,7 @@ func(r *userRepository) CreateUser(ctx context.Context,id int) error {
 
 func(r *userRepository) UserExists(id int) (bool,error) {
 	var exists bool
-	err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`).Scan(&exists)
+	err := r.db.QueryRow(`SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`,id).Scan(&exists)
 	if err != nil {
 		return false,err
 	}
